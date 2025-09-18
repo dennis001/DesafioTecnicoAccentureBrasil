@@ -1,0 +1,2 @@
+default: --no-source --color --format pretty
+report: --format pretty --format json -o reports/report.json --color
