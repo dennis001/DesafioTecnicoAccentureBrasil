@@ -32,14 +32,11 @@ jobs:
           ruby-version: 3.2
           bundler-cache: true
 
-      - name: Permissão de execução para setup.sh
-        run: chmod +x setup.sh
+      - name: Install dependencies
+        run: bundle install
 
-      - name: Setup do projeto (Ruby, Bundler, Gems)
-        run: ./setup.sh
-
-      - name: Executa testes com Cucumber (perfil report)
-        run: cucumber -p report
+      - name: Run tests
+        run: bundle exec cucumber -p report
 
       - name: Gera relatório final com ReportBuilder
         run: rake report
