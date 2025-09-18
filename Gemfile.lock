@@ -1,4 +1,4 @@
-bundle lock --add-platform x86_64-linuxGEM
+GEM
   remote: https://rubygems.org/
   specs:
     base64 (0.3.0)
@@ -39,13 +39,15 @@ bundle lock --add-platform x86_64-linuxGEM
     faker (3.5.2)
       i18n (>= 1.8.11, < 2)
     ffi (1.17.2-x64-mingw-ucrt)
+    ffi (1.17.2-x86_64-darwin)
+    ffi (1.17.2-x86_64-linux-gnu)
     httparty (0.23.1)
       csv
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
-    json (2.13.2)
+    json (2.14.1)
     logger (1.7.0)
     memoist3 (1.0.0)
     method_source (1.1.0)
@@ -97,6 +99,8 @@ bundle lock --add-platform x86_64-linuxGEM
 
 PLATFORMS
   x64-mingw-ucrt
+  x86_64-darwin
+  x86_64-linux
 
 DEPENDENCIES
   cucumber
