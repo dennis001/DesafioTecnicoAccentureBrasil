@@ -1,4 +1,4 @@
-GEM
+bundle lock --add-platform x86_64-linuxGEM
   remote: https://rubygems.org/
   specs:
     base64 (0.3.0)
