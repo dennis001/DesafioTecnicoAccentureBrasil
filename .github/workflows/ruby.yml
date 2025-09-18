@@ -36,7 +36,7 @@ jobs:
         run: bundle install
 
       - name: Run tests
-        run: bundle exec cucumber -p report
+        run: bundle exec cucumber -p headless
 
       - name: Gera relatório final com ReportBuilder
         run: rake report
