@@ -1,21 +1,34 @@
 Before do
-  # Setup necessário antes de cada cenário de API
+  options = case BROWSER
+            when :chrome
+              Selenium::WebDriver::Chrome::Options.new.tap do |opts|
+                opts.add_argument('--headless') if HEADLESS
+                opts.add_argument('--window-size=1400,900')
+              end
+            when :firefox
+              Selenium::WebDriver::Firefox::Options.new.tap do |opts|
+                opts.add_argument('--headless') if HEADLESS
+                opts.add_argument('--width=1400')
+                opts.add_argument('--height=900')
+              end
+            else
+              nil
+            end
+
+  @browser = Watir::Browser.new(BROWSER, options: options)
+end
+
+After do |scenario|
+  if scenario.failed?
+    pasta = 'reports/screenshots'
+    FileUtils.mkdir_p(pasta) unless File.directory?(pasta)
+    nome_arquivo = "#{pasta}/#{scenario.__id__}.png"
+    @browser.screenshot.save(nome_arquivo)
+    # Anexa o caminho do screenshot nos detalhes do cenário
+    scenario.attach(nome_arquivo, 'image/png', 'Screenshot')
+  end
 end
 
 After do
-  # Cleanup necessário após cada cenário de API
+  @browser&.close
 end
-
-# AfterConfiguration do
-#   at_exit do
-#     ReportBuilder.configure do |config|
-#       config.input_path = 'reports/report.json'
-#       config.report_path = 'reports/automacao_api'
-#       config.report_types = [:html]
-#       config.report_title = 'Desafio Técnico Accenture - API'
-#       config.color = 'indigo'
-#       config.additional_info = { 'Projeto' => 'Desafio Accenture', 'Ambiente' => 'DemoQA', 'Data' => Time.now }
-#     end
-#     ReportBuilder.build_report
-#   end
-# end

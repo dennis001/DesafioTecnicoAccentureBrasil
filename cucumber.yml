@@ -1,2 +1,5 @@
-default: --no-source --color --format pretty
-report: --format pretty --format json -o reports/report.json --color
+default: --no-source --color --format pretty --publish-quiet 
+headless: HEADLESS=true --profile default
+chrome: BROWSER=chrome --profile default
+firefox: BROWSER=firefox --profile default
+report: --format pretty --format html --out=reports/report.html --format json --out=reports/report.json

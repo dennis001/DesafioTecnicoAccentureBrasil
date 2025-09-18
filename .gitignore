@@ -1,0 +1,10 @@
+# Relatórios e evidências
+/reports/*.html
+/reports/*.json
+/reports/report_final*
+/reports/screenshots/*
+/reports/**/*.png
+
+# Arquivos de configuração do Rubymine/Jetbrains
+.idea/
+*.iml
