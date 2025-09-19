@@ -9,44 +9,32 @@ name: CI - Accenture DemoQA
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "main" ]
-
-permissions:
-  contents: read
+    branches: [ main ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        ruby-version: ['2.6', '2.7', '3.0']
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout do código
+        uses: actions/checkout@v3
 
-      - name: Set up Ruby
+      - name: Configurar Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.2
-          bundler-cache: true
+          ruby-version: '3.2'
 
       - name: Instalar dependências
         run: bundle install
 
-      - name: Run tests
-        run: bundle exec cucumber -p headless
+      - name: Executar testes Cucumber e gerar relatório HTML
+        run: bundle exec cucumber --format html --out reports/relatorio.html
 
-      - name: Reinstalar dependências
-        run: bundle install
-
-      - name: Gerar relatório
+      - name: Publicar relatório de testes como artifact
         if: always()
-        run: bundle exec rake report
-
-      - name: Upload de evidências e relatórios
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
-          name: reports
-          path: reports/
+          name: relatorio-teste
+          path: reports/relatorio.html
