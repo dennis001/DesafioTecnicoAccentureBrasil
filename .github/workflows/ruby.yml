@@ -32,7 +32,7 @@ jobs:
           ruby-version: 3.2
           bundler-cache: true
 
-      - name: Install dependencies
+      - name: Instalar dependências
         run: bundle install
 
       - name: Run tests
