@@ -38,8 +38,12 @@ jobs:
       - name: Run tests
         run: bundle exec cucumber -p headless
 
-      - name: Gera relatório final com ReportBuilder
-        run: rake report
+      - name: Reinstalar dependências
+        run: bundle install
+
+      - name: Gerar relatório
+        if: always()
+        run: bundle exec rake report
 
       - name: Upload de evidências e relatórios
         uses: actions/upload-artifact@v4
