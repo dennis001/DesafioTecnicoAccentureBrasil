@@ -19,6 +19,9 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      HEADLESS: "true"  # Garante execução headless em todos os steps
+
     strategy:
       matrix:
         ruby-version: ['3.2']
@@ -40,7 +43,7 @@ jobs:
         run: mkdir -p reports
 
       - name: Executa testes com Cucumber (gera HTML)
-        run: bundle exec cucumber -p report --format html --out reports/relatorio.html || true
+        run: bundle exec cucumber -p report --format html --out reports/relatorio.html
 
       - name: Gera relatório final com ReportBuilder
         run: bundle exec rake report
