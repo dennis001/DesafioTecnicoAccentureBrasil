@@ -45,14 +45,18 @@ jobs:
       - name: Executa testes com Cucumber (gera HTML)
         run: bundle exec cucumber -p headless -p report --format html --out reports/relatorio.html || true
 
-      - name: Rerun cenários falhos (se houver)
+      - name: Rerun cenários falhos até 3 vezes (se houver)
         if: always()
         run: |
+          tentativas=0
+          max_tentativas=3
+          while [ -s rerun.txt ] && [ $tentativas -lt $max_tentativas ]; do
+            tentativas=$((tentativas+1))
+            echo "Tentativa de rerun #$tentativas..."
+            bundle exec cucumber -p headless @rerun.txt --format html --out reports/relatorio_rerun_$tentativas.html || true
+          done
           if [ -s rerun.txt ]; then
-            echo "Reexecutando cenários falhos..."
-            bundle exec cucumber -p headless @rerun.txt --format html --out reports/relatorio_rerun.html || true
-          else
-            echo "Nenhum cenário para reexecutar."
+            echo "Ainda há cenários falhos após $max_tentativas tentativas."
           fi
 
       - name: Gera relatório final com ReportBuilder
