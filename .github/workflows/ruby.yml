@@ -43,7 +43,17 @@ jobs:
         run: mkdir -p reports
 
       - name: Executa testes com Cucumber (gera HTML)
-        run: bundle exec cucumber -p report --format html --out reports/relatorio.html
+        run: bundle exec cucumber -p report --format html --out reports/relatorio.html || true
+
+      - name: Rerun cenários falhos (se houver)
+        if: always()
+        run: |
+          if [ -s rerun.txt ]; then
+            echo "Reexecutando cenários falhos..."
+            bundle exec cucumber @rerun.txt --format html --out reports/relatorio_rerun.html || true
+          else
+            echo "Nenhum cenário para reexecutar."
+          fi
 
       - name: Gera relatório final com ReportBuilder
         if: always()

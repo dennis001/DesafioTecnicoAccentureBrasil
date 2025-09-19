@@ -2,4 +2,4 @@ default: --no-source --color --format pretty --publish-quiet
 headless: HEADLESS=true --profile default
 chrome: BROWSER=chrome --profile default
 firefox: BROWSER=firefox --profile default
-report: --format pretty --format html --out=reports/report.html --format json --out=reports/report.json
+report: --format pretty --format html --out=reports/report.html --format json --out=reports/report.json --format rerun --out=rerun.txt
