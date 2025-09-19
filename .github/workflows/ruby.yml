@@ -46,6 +46,7 @@ jobs:
         run: bundle exec cucumber -p report --format html --out reports/relatorio.html
 
       - name: Gera relatório final com ReportBuilder
+        if: always()
         run: bundle exec rake report
 
       - name: Upload de evidências e relatórios
