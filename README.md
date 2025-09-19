@@ -145,28 +145,68 @@ Basta adicionar os steps de execução no workflow (veja exemplo no final deste 
 ## Exemplo de Workflow para GitHub Actions
 
 ```yaml
-name: CI
+name: CI - Accenture DemoQA
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      HEADLESS: "true"  # Garante execução headless em todos os steps
+
+    strategy:
+      matrix:
+        ruby-version: ['3.2']
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout do código
+        uses: actions/checkout@v4
 
-      - name: Setup projeto
-        run: ./setup.sh
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+          bundler-cache: true
 
-      - name: Executa testes
-        run: cucumber -p report
+      - name: Instalar dependências (bundle install)
+        run: bundle install
 
-      - name: Gera relatório
-        run: rake report
+      - name: Garante pasta de relatórios
+        run: mkdir -p reports
 
-      - name: Upload de evidências
-        uses: actions/upload-artifact@v3
+      - name: Executa testes com Cucumber (gera HTML)
+        run: bundle exec cucumber -p headless -p report --format html --out reports/relatorio.html || true
+
+      - name: Rerun cenários falhos até 3 vezes (se houver)
+        if: always()
+        run: |
+          tentativas=0
+          max_tentativas=3
+          while [ -s rerun.txt ] && [ $tentativas -lt $max_tentativas ]; do
+            tentativas=$((tentativas+1))
+            echo "Tentativa de rerun #$tentativas..."
+            cp rerun.txt rerun_tmp.txt
+            bundle exec cucumber -p headless @rerun_tmp.txt --format html --out reports/relatorio_rerun_$tentativas.html --format rerun --out rerun.txt || true
+          done
+          if [ -s rerun.txt ]; then
+            echo "Ainda há cenários falhos após $max_tentativas tentativas."
+          fi
+
+      - name: Gera relatório final com ReportBuilder
+        if: always()
+        run: bundle exec rake report
+
+      - name: Upload de evidências e relatórios
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
           name: reports
           path: reports/
