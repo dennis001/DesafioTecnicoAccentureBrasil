@@ -24,7 +24,8 @@ jobs:
         ruby-version: ['3.0']
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout do código
+        uses: actions/checkout@v4
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -41,9 +42,12 @@ jobs:
       - name: Executa testes com Cucumber (gera HTML)
         run: bundle exec cucumber -p report --format html --out reports/relatorio.html || true
 
+      - name: Gera relatório final com ReportBuilder
+        run: bundle exec rake report
+
       - name: Upload de evidências e relatórios
         if: always()
-      - uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4
         with:
           name: reports
           path: reports/
