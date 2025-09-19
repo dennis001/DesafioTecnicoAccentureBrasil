@@ -53,7 +53,8 @@ jobs:
           while [ -s rerun.txt ] && [ $tentativas -lt $max_tentativas ]; do
             tentativas=$((tentativas+1))
             echo "Tentativa de rerun #$tentativas..."
-            bundle exec cucumber -p headless @rerun.txt --format html --out reports/relatorio_rerun_$tentativas.html --format rerun --out rerun.txt || true
+            cp rerun.txt rerun_tmp.txt
+            bundle exec cucumber -p headless @rerun_tmp.txt --format html --out reports/relatorio_rerun_$tentativas.html --format rerun --out rerun.txt || true
           done
           if [ -s rerun.txt ]; then
             echo "Ainda há cenários falhos após $max_tentativas tentativas."
